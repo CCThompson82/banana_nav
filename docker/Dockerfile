@@ -12,6 +12,7 @@ ENV UNITY_ENV_PATH="/usr/lib/Banana_Linux_NoVis/Banana.x86_64"
 ################################################################################
 #  setup environment
 ################################################################################
+USER $UID
 WORKDIR /workdir
 ENV ROOT_DIR=/workdir
 ENTRYPOINT ["/bin/bash"]
