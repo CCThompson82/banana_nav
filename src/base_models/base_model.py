@@ -5,7 +5,7 @@ Model object that abstracts dynamic model versioning and directory management.
 from pydoc import locate
 
 
-class BaseModel(object):
+class ModelClient(object):
     def __init__(self, model_name, experiment_id):
         self.model = self.load_model(model_name, experiment_id)
         self.nb_actions = 4
