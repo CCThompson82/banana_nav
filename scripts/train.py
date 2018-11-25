@@ -13,6 +13,7 @@ WORK_DIR = os.environ['ROOT_DIR']
 sys.path.append(WORK_DIR)
 
 import json
+from tqdm import tqdm
 from unityagents import UnityEnvironment
 
 from src.model_clients.client import ModelClient
@@ -32,8 +33,9 @@ if __name__ == '__main__':
     client = ModelClient(brain=brain, **model_config, train_config=train_config)
 
     # build buffer with by running episodes
+    pbar = tqdm(total=train_config['max_episodes'])
     while not client.training_finished(train_config):
-
+        pbar.update()
         env_info = env.reset(train_mode=True)[brain.brain_name]
         state = env_info.vector_observations
 
@@ -59,3 +61,4 @@ if __name__ == '__main__':
 
         if client.episode_count % train_config['checkpoint_frequency'] == 0:
             client.checkpoint_model()
+
