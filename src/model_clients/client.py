@@ -3,6 +3,7 @@ Model object that abstracts dynamic model versioning and directory management.
 """
 
 from pydoc import locate
+import numpy as np
 
 
 class ModelClient(object):
@@ -62,12 +63,24 @@ class ModelClient(object):
 
     def training_finished(self, train_config):
         return self.model.terminate_training_status(
-            train_config, step_count=self.step_count)
+            train_config, step_count=self.step_count,
+            episode_count=self.episode_count)
 
     def store_reward(self, reward):
         self.episode_score += reward
 
     def record_episode_score(self):
+        try:
+            arr = np.load(self.model.results_filename)
+            arr = np.concatenate([arr, np.array([self.episode_score])])
+        except FileNotFoundError:
+            arr = np.array([self.episode_score])
+        np.save(self.model.results_filename, arr)
+        self.reset_episode()
 
-        pass
+    def reset_episode(self):
+        self.episode_score = 0
+        self.episode_count += 1
 
+    def checkpoint_model(self):
+        self.model.checkpoint_model(episode_count=self.episode_count)

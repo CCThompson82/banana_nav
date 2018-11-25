@@ -17,6 +17,8 @@ class BaseModel(object):
         self.model_dir = os.path.join(
             ROOT_DIR, 'data', model_name, experiment_id)
         self.results_dir = os.path.join(self.model_dir, 'results')
+        self.results_filename = os.path.join(self.results_dir,
+                                             'episode_scores.npy')
         self.checkpoint_dir = os.path.join(self.model_dir, 'checkpoints')
         self.experiment_info_dir = os.path.join(
             self.model_dir, 'experiment_info')

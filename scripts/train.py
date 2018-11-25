@@ -57,6 +57,5 @@ if __name__ == '__main__':
 
         client.record_episode_score()
 
-
-
-
+        if client.episode_count % train_config['checkpoint_frequency'] == 0:
+            client.checkpoint_model()

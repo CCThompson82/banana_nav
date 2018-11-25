@@ -45,8 +45,16 @@ class Model(BaseModel):
     def get_epsilon(self, step_count):
         return 1.0/step_count
 
-    def terminate_training_status(self, train_config, step_count):
-        return step_count >= train_config['max_training_steps']
+    def terminate_training_status(self, train_config, step_count,
+                                  episode_count):
+        return episode_count >= train_config['max_episodes']
+
+    def checkpoint_model(self, episode_count):
+        checkpoint_fn = os.path.join(self.checkpoint_dir, '{}.json'.format(
+            episode_count))
+        weights = {}
+        with open(checkpoint_fn, 'w') as out:
+            json.dump(weights, out)
 
 
 
