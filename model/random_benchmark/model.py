@@ -12,15 +12,16 @@ from src.base_model.base_model import BaseModel
 
 
 class Model(BaseModel):
-    def __init__(self, model_name, experiment_id, brain, train_config):
+    def __init__(self, model_name, experiment_id, nb_actions, nb_state_features,
+                 train_config):
         super(Model, self).__init__(model_name=model_name,
                                     experiment_id=experiment_id,
                                     train_config=train_config)
         with open(os.path.join(WORK_DIR, 'model', model_name, experiment_id,
                                "params.json")) as handle:
             self.params = json.load(handle)
-        self.nb_actions = brain.vector_action_space_size
-        self.state_size = brain.vector_observation_space_size
+        self.nb_actions = nb_actions
+        self.state_size = nb_state_features
 
         self.experience_buffer = []
 

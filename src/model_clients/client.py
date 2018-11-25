@@ -7,20 +7,25 @@ import numpy as np
 
 
 class ModelClient(object):
-    def __init__(self, brain, model_name, experiment_id, train_config):
+    def __init__(self, nb_actions, nb_state_features, model_name,
+                 experiment_id, train_config):
         self.train_config=train_config
-        self.nb_actions = brain.vector_action_space_size
-        self.state_shape = brain.vector_observation_space_size
+        self.nb_actions = nb_actions
+        self.state_shape = nb_state_features
 
-        self.model = self.load_model(model_name, experiment_id, brain,
-                                     train_config)
+        self.model = self.load_model(model_name, experiment_id,
+                                     nb_actions=nb_actions,
+                                     nb_state_features=nb_state_features,
+                                     train_config=train_config)
         self.step_count = 0
         self.episode_count = 0
         self.episode_score = 0
 
-    def load_model(self, model_name, experiment_id, brain, train_config):
+    def load_model(self, model_name, experiment_id, nb_actions,
+                   nb_state_features, train_config):
         Model = locate('model.{}.model.Model'.format(model_name))
-        model = Model(model_name, experiment_id, brain, train_config)
+        model = Model(model_name, experiment_id, nb_actions, nb_state_features,
+                      train_config)
         return model
 
     def get_next_action(self, state):
