@@ -47,6 +47,7 @@ if __name__ == '__main__':
             client.store_experience(experience=(state, action, reward, next_state))
             state = next_state
 
+            # if buffer is acceptable, train model
             if not client.check_training_status(
                     min_buffer_size=train_config['min_buffer_size']):
                 continue
