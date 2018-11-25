@@ -13,7 +13,8 @@ class ModelClient(object):
         self.nb_actions = nb_actions
         self.state_shape = nb_state_features
 
-        self.model = self.load_model(model_name, experiment_id,
+        self.model = self.load_model(model_name=model_name,
+                                     experiment_id=experiment_id,
                                      nb_actions=nb_actions,
                                      nb_state_features=nb_state_features,
                                      train_config=train_config)
@@ -24,8 +25,11 @@ class ModelClient(object):
     def load_model(self, model_name, experiment_id, nb_actions,
                    nb_state_features, train_config):
         Model = locate('model.{}.model.Model'.format(model_name))
-        model = Model(model_name, experiment_id, nb_actions, nb_state_features,
-                      train_config)
+        model = Model(model_name=model_name,
+                      experiment_id=experiment_id,
+                      nb_state_features=nb_state_features,
+                      nb_actions=nb_actions,
+                      train_config=train_config)
         return model
 
     def get_next_action(self, state):

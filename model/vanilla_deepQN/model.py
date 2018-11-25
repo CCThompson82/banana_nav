@@ -9,10 +9,13 @@ sys.path.append(WORK_DIR)
 import json
 import numpy as np
 from src.base_model.base_model import BaseModel
+import torch
+nn = torch.nn
+from collections import OrderedDict
 
 
 class Model(BaseModel):
-    def __init__(self, model_name, experiment_id, nb_actions, nb_state_features,
+    def __init__(self, model_name, experiment_id, nb_state_features, nb_actions,
                  train_config):
         super(Model, self).__init__(model_name=model_name,
                                     experiment_id=experiment_id,
@@ -25,13 +28,27 @@ class Model(BaseModel):
 
         self.experience_buffer = []
 
-
+        self.network = Network(
+            nb_features=self.state_size, nb_actions=self.nb_actions)
 
     def next_action(self, state, epsilon):
-        return np.random.randint(0, self.nb_actions)
+        state_tensor = torch.from_numpy(state).float()
+
+        action_values = self.network.network.forward(state_tensor).data.numpy()
+        action = np.argmax(action_values, axis=-1)
+
+        if np.random.rand() < epsilon:
+            action = np.random.randint(0, self.nb_actions)
+
+        return action
 
     def next_max_action(self, state):
-        return np.random.randint(0, self.nb_actions)
+        state_tensor = torch.from_numpy(state).float()
+
+        action_values = self.network.network.forward(state_tensor).data.numpy()
+        action = np.argmax(action_values, axis=-1)
+
+        return action
 
     def store_experience(self, experience):
         self.experience_buffer.append(experience)
@@ -60,4 +77,30 @@ class Model(BaseModel):
             json.dump(weights, out)
 
 
+class Network(nn.Module):
+    def __init__(self, nb_features, nb_actions, seed=1234):
+        super(Network, self).__init__()
+        self.seed = torch.manual_seed(seed)
+        print('Cuda is available: {}'.format(torch.cuda.is_available()))
+        self.device = torch.device("cuda:0" if torch.cuda.is_available() else "cpu")
 
+        self.network = torch.nn.Sequential(
+            OrderedDict([
+                ('fc1', nn.Linear(in_features=nb_features, out_features=64, bias=True)),
+                ('relu1', nn.ReLU()),
+                ('fc2', nn.Linear(in_features=64, out_features=32, bias=True)),
+                ('relu2', nn.ReLU()),
+                ('fc3', nn.Linear(in_features=32, out_features=nb_actions, bias=True))]))
+
+        print(self.network)
+
+    def forward(self, state):
+        """
+
+        Args:
+            state: torch.nn.Tensor object [batch_size, feature_size]
+
+        Returns:
+            target q_values for each action available
+        """
+        return self.network.forward(state)

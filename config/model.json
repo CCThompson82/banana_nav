@@ -1,4 +1,4 @@
 {
-  "model_name": "random_benchmark",
+  "model_name": "vanilla_deepQN",
   "experiment_id": "exp_0"
 }

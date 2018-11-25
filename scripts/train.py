@@ -31,7 +31,7 @@ if __name__ == '__main__':
         train_config = json.load(handle)
 
     client = ModelClient(nb_actions=brain.vector_action_space_size,
-                         nb_state_features= brain.vector_action_space_size,
+                         nb_state_features=brain.vector_observation_space_size,
                          train_config=train_config,
                          **model_config)
 
