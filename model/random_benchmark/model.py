@@ -12,9 +12,10 @@ from src.base_model.base_model import BaseModel
 
 
 class Model(BaseModel):
-    def __init__(self, model_name, experiment_id, brain):
+    def __init__(self, model_name, experiment_id, brain, train_config):
         super(Model, self).__init__(model_name=model_name,
-                                    experiment_id=experiment_id)
+                                    experiment_id=experiment_id,
+                                    train_config=train_config)
         with open(os.path.join(WORK_DIR, 'model', model_name, experiment_id,
                                "params.json")) as handle:
             self.params = json.load(handle)

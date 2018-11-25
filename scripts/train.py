@@ -29,7 +29,7 @@ if __name__ == '__main__':
     with open(os.path.join(WORK_DIR, 'config', 'train.json')) as handle:
         train_config = json.load(handle)
 
-    client = ModelClient(brain=brain, **model_config)
+    client = ModelClient(brain=brain, **model_config, train_config=train_config)
 
     # build buffer with by running episodes
     while not client.training_finished(train_config):
@@ -44,7 +44,9 @@ if __name__ == '__main__':
             reward = env_info.rewards[0]
             next_state = env_info.vector_observations[0]
 
-            client.store_experience(experience=(state, action, reward, next_state))
+            client.store_experience(
+                experience=(state, action, reward, next_state))
+            client.store_reward(reward)
             state = next_state
 
             # if buffer is acceptable, train model
@@ -52,6 +54,8 @@ if __name__ == '__main__':
                     min_buffer_size=train_config['min_buffer_size']):
                 continue
             client.train_model(gamma=train_config['gamma'])
+
+        client.record_episode_score()
 
 
 

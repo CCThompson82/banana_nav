@@ -1,6 +1,6 @@
 {
   "checkpoint_frequency": 1,
-  "overwrite_experiment_id": false,
+  "overwrite_experiment_id": true,
   "min_buffer_size": 1,
   "max_training_steps": 1000,
   "gamma": 0.9
