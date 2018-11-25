@@ -13,16 +13,43 @@ WORK_DIR = os.environ['ROOT_DIR']
 sys.path.append(WORK_DIR)
 
 import json
-import numpy as np
+from unityagents import UnityEnvironment
 
-from src.base_models.base_model import ModelClient
+from src.model_clients.client import ModelClient
 
 UNITY_ENV_PATH = os.environ['UNITY_ENV_PATH']
 
 if __name__ == '__main__':
 
+    env = UnityEnvironment(file_name=UNITY_ENV_PATH)
+    brain = env.brains[env.brain_names[0]]
+
     with open(os.path.join(WORK_DIR, 'config', 'model.json')) as handle:
         model_config = json.load(handle)
-    client = ModelClient(**model_config)
+    with open(os.path.join(WORK_DIR, 'config', 'train.json')) as handle:
+        train_config = json.load(handle)
 
-    print(client.get_next_action(np.zeros(37)))
+    client = ModelClient(brain=brain, **model_config)
+
+    # build buffer with by running episodes
+    while not client.training_finished(train_config):
+
+        env_info = env.reset(train_mode=True)[brain.brain_name]
+        state = env_info.vector_observations
+
+        while not (env_info.local_done[0] or env_info.max_reached[0]):
+
+            action = client.get_next_action(state=state)
+            env_info = env.step(action)[brain.brain_name]
+            reward = env_info.rewards[0]
+            next_state = env_info.vector_observations[0]
+
+            client.store_experience(experience=(state, action, reward, next_state))
+            state = next_state
+
+            if not client.check_training_status(
+                    min_buffer_size=train_config['min_buffer_size']):
+                continue
+            client.train_model(gamma=train_config['gamma'])
+
+
