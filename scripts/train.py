@@ -55,10 +55,9 @@ if __name__ == '__main__':
             state = next_state
 
             # if buffer is acceptable, train model
-            if not client.check_training_status(
-                    min_buffer_size=train_config['min_buffer_size']):
+            if not client.check_training_status():
                 continue
-            client.train_model(gamma=train_config['gamma'])
+            client.train_model()
 
         client.record_episode_score()
 

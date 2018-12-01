@@ -42,24 +42,20 @@ class ModelClient(object):
     def store_experience(self, experience):
         self.model.store_experience(experience)
 
-    def pull_experience_from_buffer(self):
-        return self.model.get_experience_from_buffer()
+    def get_sarsa(self):
+        return self.model.get_sarsa()
 
-    def check_training_status(self, min_buffer_size):
-        return len(self.model.experience_buffer) >= min_buffer_size
+    def check_training_status(self):
+        status = self.model.check_training_status()
+        return status
 
-    def estimate_q(self, state, action, fixed):
-        return self.model.estimate_q(state, action, fixed)
+    def train_model(self):
 
-    def train_model(self, gamma):
-
-        state, action, reward, next_state = self.pull_experience_from_buffer()
+        state, action, reward, next_state = self.get_sarsa()
         next_action = self.get_next_max_action(state)
-        q_hat = reward + (gamma *
-                          self.estimate_q(next_state, next_action, fixed=True))
-        q_current = self.estimate_q(state, action, fixed=False)
 
-        delta_q = q_hat - q_current
+        delta_q = self.model.compute_value_error(
+            state, action, reward, next_state, next_action)
 
         self.update_model_weights(loss=delta_q)
 

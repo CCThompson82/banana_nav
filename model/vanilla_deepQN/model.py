@@ -53,10 +53,19 @@ class Model(BaseModel):
     def store_experience(self, experience):
         self.experience_buffer.append(experience)
 
-    def get_experience_from_buffer(self):
+    def get_sarsa(self):
         return self.experience_buffer.pop(0)
 
-    def estimate_q(self, state, action, fixed):
+    def compute_value_error(self, state, action, reward, next_state,
+                            next_action):
+        gamma = self.train_config['gamma']
+        q_hat = reward + (gamma * self.estimate_q(state=next_state,
+                                                  action=next_action))
+        q_current = self.estimate_q(state, action)
+        delta_q = q_hat - q_current
+        return delta_q
+
+    def estimate_q(self, state, action, **kwargs):
         return np.random.rand()
 
     def update_model_weights(self, loss):
@@ -75,6 +84,11 @@ class Model(BaseModel):
         weights = {}
         with open(checkpoint_fn, 'w') as out:
             json.dump(weights, out)
+
+    def check_training_status(self):
+        status = (len(self.experience_buffer) >=
+                  self.train_config['min_buffer_size'])
+        return status
 
 
 class Network(nn.Module):
