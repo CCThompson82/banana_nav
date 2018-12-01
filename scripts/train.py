@@ -37,7 +37,7 @@ if __name__ == '__main__':
 
     # build buffer with by running episodes
     pbar = tqdm(total=train_config['max_episodes'])
-    while not client.training_finished(train_config):
+    while not client.training_finished():
         pbar.update()
         env_info = env.reset(train_mode=True)[brain.brain_name]
         state = env_info.vector_observations

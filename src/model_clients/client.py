@@ -66,9 +66,9 @@ class ModelClient(object):
     def epsilon(self):
         return self.model.get_epsilon(step_count=self.step_count)
 
-    def training_finished(self, train_config):
+    def training_finished(self):
         return self.model.terminate_training_status(
-            train_config, step_count=self.step_count,
+            step_count=self.step_count,
             episode_count=self.episode_count)
 
     def store_reward(self, reward):
