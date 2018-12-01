@@ -41,7 +41,9 @@ if __name__ == '__main__':
     while not client.training_finished():
         pbar.set_postfix(
             ordered_dict=OrderedDict(
-                [('mean score', client.mean_episode_score),
+                [('steps', client.step_count),
+                 ('buffer_size', client.buffer_size),
+                 ('mean score', client.mean_episode_score),
                  ('best score', client.best_episode_score),
                  ('epsilon', client.epsilon)]))
         pbar.update()

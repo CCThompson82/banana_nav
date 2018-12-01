@@ -1,5 +1,5 @@
 """
-Random action agent model
+Vanilla DQN
 """
 import os
 import sys

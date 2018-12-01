@@ -100,3 +100,10 @@ class ModelClient(object):
         except FileNotFoundError:
             return 0
         return np.round(np.max(arr), 3)
+
+    @property
+    def buffer_size(self):
+        try:
+            return len(self.model.experience_buffer)
+        except AttributeError:
+            return 0.0
