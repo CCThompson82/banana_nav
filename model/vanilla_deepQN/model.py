@@ -30,6 +30,8 @@ class Model(BaseModel):
 
         self.network = Network(
             nb_features=self.state_size, nb_actions=self.nb_actions)
+        self.criterion = nn.MSELoss()
+        self.optimizer = torch.optim.Adam(self.network.parameters(), lr=1e-3)
 
     def next_action(self, state, epsilon):
         state_tensor = torch.from_numpy(state).float()
@@ -57,22 +59,21 @@ class Model(BaseModel):
     def get_sarsa(self):
         return self.experience_buffer.pop(0)
 
-    def compute_value_error(self, state, action, reward, next_state,
-                            next_action):
+    def train_model(self, state, action, reward, next_state, next_action):
         gamma = self.train_config['gamma']
+        q_expected = self.estimate_q(state, action).detach()
+
+        self.optimizer.zero_grad()
         q_hat = reward + (gamma * self.estimate_q(state=next_state,
                                                   action=next_action))
-        q_current = self.estimate_q(state, action)
-
-        delta_q = q_hat - q_current
-        return delta_q
+        q_delta = self.criterion(q_hat, q_expected)
+        q_delta.backward()
+        self.optimizer.step()
 
     def estimate_q(self, state, action, **kwargs):
-        print(state.shape)
         state = torch.from_numpy(state).float()
         action_values_tensor = self.network.forward(state)
-        action_values = action_values_tensor.data.numpy()
-        return action_values[action]
+        return action_values_tensor[action]
 
     def update_model_weights(self, loss):
         pass

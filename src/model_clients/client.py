@@ -54,13 +54,8 @@ class ModelClient(object):
         state, action, reward, next_state = self.get_sarsa()
         next_action = self.get_next_max_action(state)
 
-        delta_q = self.model.compute_value_error(
+        self.model.train_model(
             state, action, reward, next_state, next_action)
-
-        self.update_model_weights(loss=delta_q)
-
-    def update_model_weights(self, loss):
-        self.model.update_model_weights(loss)
 
     @property
     def epsilon(self):
@@ -89,3 +84,11 @@ class ModelClient(object):
 
     def checkpoint_model(self):
         self.model.checkpoint_model(episode_count=self.episode_count)
+
+    @property
+    def mean_episode_score(self):
+        try:
+            arr = np.load(self.model.results_filename)
+        except FileNotFoundError:
+            return 0
+        return np.round(np.mean(arr), 3)

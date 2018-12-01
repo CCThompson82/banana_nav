@@ -14,6 +14,7 @@ sys.path.append(WORK_DIR)
 
 import json
 from tqdm import tqdm
+from collections import OrderedDict
 from unityagents import UnityEnvironment
 
 from src.model_clients.client import ModelClient
@@ -38,6 +39,9 @@ if __name__ == '__main__':
     # build buffer with by running episodes
     pbar = tqdm(total=train_config['max_episodes'])
     while not client.training_finished():
+        pbar.set_postfix(
+            ordered_dict=OrderedDict(
+                [('mean episode score', client.mean_episode_score)]))
         pbar.update()
         env_info = env.reset(train_mode=True)[brain.brain_name]
         state = env_info.vector_observations[0]
