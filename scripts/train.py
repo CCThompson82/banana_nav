@@ -41,7 +41,8 @@ if __name__ == '__main__':
     while not client.training_finished():
         pbar.set_postfix(
             ordered_dict=OrderedDict(
-                [('mean episode score', client.mean_episode_score),
+                [('mean score', client.mean_episode_score),
+                 ('best score', client.best_episode_score),
                  ('epsilon', client.epsilon)]))
         pbar.update()
         env_info = env.reset(train_mode=True)[brain.brain_name]

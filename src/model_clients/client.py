@@ -92,3 +92,11 @@ class ModelClient(object):
         except FileNotFoundError:
             return 0
         return np.round(np.mean(arr), 3)
+
+    @property
+    def best_episode_score(self):
+        try:
+            arr = np.load(self.model.results_filename)
+        except FileNotFoundError:
+            return 0
+        return np.round(np.max(arr), 3)
