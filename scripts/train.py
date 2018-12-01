@@ -40,7 +40,7 @@ if __name__ == '__main__':
     while not client.training_finished():
         pbar.update()
         env_info = env.reset(train_mode=True)[brain.brain_name]
-        state = env_info.vector_observations
+        state = env_info.vector_observations[0]
 
         while not (env_info.local_done[0] or env_info.max_reached[0]):
 

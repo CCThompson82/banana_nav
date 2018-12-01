@@ -37,8 +37,9 @@ class Model(BaseModel):
         action_values = self.network.network.forward(state_tensor).data.numpy()
         action = np.argmax(action_values, axis=-1)
 
-        if np.random.rand() < epsilon:
-            action = np.random.randint(0, self.nb_actions)
+        # if np.random.rand() < epsilon:
+        #     print('choosing random!')
+        #     action = np.random.randint(0, self.nb_actions)
 
         return action
 
@@ -62,12 +63,16 @@ class Model(BaseModel):
         q_hat = reward + (gamma * self.estimate_q(state=next_state,
                                                   action=next_action))
         q_current = self.estimate_q(state, action)
+
         delta_q = q_hat - q_current
         return delta_q
 
     def estimate_q(self, state, action, **kwargs):
-
-        return np.random.rand()
+        print(state.shape)
+        state = torch.from_numpy(state).float()
+        action_values_tensor = self.network.forward(state)
+        action_values = action_values_tensor.data.numpy()
+        return action_values[action]
 
     def update_model_weights(self, loss):
         pass
@@ -105,8 +110,6 @@ class Network(nn.Module):
                 ('fc2', nn.Linear(in_features=64, out_features=32, bias=True)),
                 ('relu2', nn.ReLU()),
                 ('fc3', nn.Linear(in_features=32, out_features=nb_actions, bias=True))]))
-
-        print(self.network)
 
     def forward(self, state):
         """
