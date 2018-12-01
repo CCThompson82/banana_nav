@@ -51,11 +51,10 @@ class ModelClient(object):
 
     def train_model(self):
 
-        state, action, reward, next_state = self.get_sarsa()
-        next_action = self.get_next_max_action(state)
-
+        states, actions, rewards, next_states = self.get_sarsa()
+        next_actions = self.get_next_max_action(next_states)
         self.model.train_model(
-            state, action, reward, next_state, next_action)
+            states, actions, rewards, next_states, next_actions)
 
     @property
     def epsilon(self):
@@ -91,7 +90,11 @@ class ModelClient(object):
             arr = np.load(self.model.results_filename)
         except FileNotFoundError:
             return 0
-        return np.round(np.mean(arr), 3)
+
+        if len(arr) < 100:
+            return np.round(np.mean(arr), 3)
+
+        return np.round(np.mean(arr[-100:]), 3)
 
     @property
     def best_episode_score(self):
@@ -100,3 +103,10 @@ class ModelClient(object):
         except FileNotFoundError:
             return 0
         return np.round(np.max(arr), 3)
+
+    @property
+    def buffer_size(self):
+        try:
+            return len(self.model.experience_buffer)
+        except AttributeError:
+            return 0.0

@@ -1,5 +1,5 @@
 """
-Random action agent model
+Vanilla DQN
 """
 import os
 import sys
@@ -50,7 +50,8 @@ class Model(BaseModel):
     def next_max_action(self, state):
         state_tensor = torch.from_numpy(state).float()
 
-        action_values = self.network.network.forward(state_tensor).data.numpy()
+        action_values = self.network.network.forward(
+            state_tensor).detach().data.numpy()
         action = np.argmax(action_values, axis=-1)
 
         return action
