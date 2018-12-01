@@ -38,6 +38,7 @@ class BaseModel(object):
                                               self.experiment_id))
 
         self.dump_experiment_info(train_config)
+        self.train_config = train_config
 
     def create_directory_structure(self):
         os.makedirs(self.model_dir)

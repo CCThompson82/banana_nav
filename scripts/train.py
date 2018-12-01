@@ -14,6 +14,7 @@ sys.path.append(WORK_DIR)
 
 import json
 from tqdm import tqdm
+from collections import OrderedDict
 from unityagents import UnityEnvironment
 
 from src.model_clients.client import ModelClient
@@ -31,16 +32,21 @@ if __name__ == '__main__':
         train_config = json.load(handle)
 
     client = ModelClient(nb_actions=brain.vector_action_space_size,
-                         nb_state_features= brain.vector_action_space_size,
+                         nb_state_features=brain.vector_observation_space_size,
                          train_config=train_config,
                          **model_config)
 
     # build buffer with by running episodes
     pbar = tqdm(total=train_config['max_episodes'])
-    while not client.training_finished(train_config):
+    while not client.training_finished():
+        pbar.set_postfix(
+            ordered_dict=OrderedDict(
+                [('mean score', client.mean_episode_score),
+                 ('best score', client.best_episode_score),
+                 ('epsilon', client.epsilon)]))
         pbar.update()
         env_info = env.reset(train_mode=True)[brain.brain_name]
-        state = env_info.vector_observations
+        state = env_info.vector_observations[0]
 
         while not (env_info.local_done[0] or env_info.max_reached[0]):
 
@@ -55,10 +61,9 @@ if __name__ == '__main__':
             state = next_state
 
             # if buffer is acceptable, train model
-            if not client.check_training_status(
-                    min_buffer_size=train_config['min_buffer_size']):
+            if not client.check_training_status():
                 continue
-            client.train_model(gamma=train_config['gamma'])
+            client.train_model()
 
         client.record_episode_score()
 

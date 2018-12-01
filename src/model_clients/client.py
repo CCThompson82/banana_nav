@@ -13,7 +13,8 @@ class ModelClient(object):
         self.nb_actions = nb_actions
         self.state_shape = nb_state_features
 
-        self.model = self.load_model(model_name, experiment_id,
+        self.model = self.load_model(model_name=model_name,
+                                     experiment_id=experiment_id,
                                      nb_actions=nb_actions,
                                      nb_state_features=nb_state_features,
                                      train_config=train_config)
@@ -24,8 +25,11 @@ class ModelClient(object):
     def load_model(self, model_name, experiment_id, nb_actions,
                    nb_state_features, train_config):
         Model = locate('model.{}.model.Model'.format(model_name))
-        model = Model(model_name, experiment_id, nb_actions, nb_state_features,
-                      train_config)
+        model = Model(model_name=model_name,
+                      experiment_id=experiment_id,
+                      nb_state_features=nb_state_features,
+                      nb_actions=nb_actions,
+                      train_config=train_config)
         return model
 
     def get_next_action(self, state):
@@ -38,37 +42,28 @@ class ModelClient(object):
     def store_experience(self, experience):
         self.model.store_experience(experience)
 
-    def pull_experience_from_buffer(self):
-        return self.model.get_experience_from_buffer()
+    def get_sarsa(self):
+        return self.model.get_sarsa()
 
-    def check_training_status(self, min_buffer_size):
-        return len(self.model.experience_buffer) >= min_buffer_size
+    def check_training_status(self):
+        status = self.model.check_training_status()
+        return status
 
-    def estimate_q(self, state, action, fixed):
-        return self.model.estimate_q(state, action, fixed)
+    def train_model(self):
 
-    def train_model(self, gamma):
-
-        state, action, reward, next_state = self.pull_experience_from_buffer()
+        state, action, reward, next_state = self.get_sarsa()
         next_action = self.get_next_max_action(state)
-        q_hat = reward + (gamma *
-                          self.estimate_q(next_state, next_action, fixed=True))
-        q_current = self.estimate_q(state, action, fixed=False)
 
-        delta_q = q_hat - q_current
-
-        self.update_model_weights(loss=delta_q)
-
-    def update_model_weights(self, loss):
-        self.model.update_model_weights(loss)
+        self.model.train_model(
+            state, action, reward, next_state, next_action)
 
     @property
     def epsilon(self):
         return self.model.get_epsilon(step_count=self.step_count)
 
-    def training_finished(self, train_config):
+    def training_finished(self):
         return self.model.terminate_training_status(
-            train_config, step_count=self.step_count,
+            step_count=self.step_count,
             episode_count=self.episode_count)
 
     def store_reward(self, reward):
@@ -89,3 +84,19 @@ class ModelClient(object):
 
     def checkpoint_model(self):
         self.model.checkpoint_model(episode_count=self.episode_count)
+
+    @property
+    def mean_episode_score(self):
+        try:
+            arr = np.load(self.model.results_filename)
+        except FileNotFoundError:
+            return 0
+        return np.round(np.mean(arr), 3)
+
+    @property
+    def best_episode_score(self):
+        try:
+            arr = np.load(self.model.results_filename)
+        except FileNotFoundError:
+            return 0
+        return np.round(np.max(arr), 3)
