@@ -51,11 +51,10 @@ class ModelClient(object):
 
     def train_model(self):
 
-        state, action, reward, next_state = self.get_sarsa()
-        next_action = self.get_next_max_action(state)
-
+        states, actions, rewards, next_states = self.get_sarsa()
+        next_actions = self.get_next_max_action(next_states)
         self.model.train_model(
-            state, action, reward, next_state, next_action)
+            states, actions, rewards, next_states, next_actions)
 
     @property
     def epsilon(self):
