@@ -2,6 +2,6 @@
   "checkpoint_frequency": 100,
   "overwrite_experiment_id": true,
   "min_buffer_size": 64,
-  "max_episodes": 10,
+  "max_episodes": 1000,
   "gamma": 0.9
 }
