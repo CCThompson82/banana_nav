@@ -34,7 +34,10 @@ if __name__ == '__main__':
     client = ModelClient(nb_actions=brain.vector_action_space_size,
                          nb_state_features=brain.vector_observation_space_size,
                          hyperparams=hyperparams,
-                         **model_config)
+                         model_name=model_config['model_name'],
+                         experiment_id=model_config['experiment_id'],
+                         overwrite_experiment=model_config[
+                             'overwrite_experiment'])
     raise ValueError
 
     # build buffer with by running episodes
