@@ -28,7 +28,7 @@ if __name__ == '__main__':
 
     with open(os.path.join(WORK_DIR, 'config', 'model.json')) as handle:
         model_config = json.load(handle)
-    with open(os.path.join(WORK_DIR, 'config', 'train.json')) as handle:
+    with open(os.path.join(WORK_DIR, 'config', 'hyperparameters.json')) as handle:
         train_config = json.load(handle)
 
     client = ModelClient(nb_actions=brain.vector_action_space_size,

@@ -2,7 +2,5 @@
   "network": {
     "fc1": 64,
     "fc2": 32
-  },
-  "buffer_size": 5000,
-  "tau": 5e-2
+  }
 }

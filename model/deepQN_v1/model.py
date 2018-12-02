@@ -3,7 +3,7 @@ DQN_v1: 3 layer neural network q value approximation with experience replay
 """
 
 import numpy as np
-from model.vanilla_deepQN.model import Model as ParentModel
+from model.deepQN_v0.model import Model as ParentModel
 import torch
 
 

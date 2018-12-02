@@ -33,7 +33,7 @@ class BaseModel(object):
         else:
             raise IOError(
                 'An experiment for {}: {} already exists.  Set overwrite to '
-                'True in  `config/train.json` if you wish to overwrite the '
+                'True in  `config/hyperparameters.json` if you wish to overwrite the '
                 'previous experiment.'.format(self.model_name,
                                               self.experiment_id))
 
