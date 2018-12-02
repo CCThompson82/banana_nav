@@ -10,7 +10,8 @@ sys.path.append(ROOT_DIR)
 
 
 class BaseModel(object):
-    def __init__(self, model_name, experiment_id, overwrite_model, hyperparams):
+    def __init__(self, model_name, experiment_id, overwrite_experiment,
+                 hyperparams):
         self.model_name = model_name
         self.experiment_id = experiment_id
 
@@ -26,7 +27,7 @@ class BaseModel(object):
         if not os.path.isdir(self.model_dir):
             self.create_directory_structure()
 
-        elif overwrite_model:
+        elif overwrite_experiment:
             shutil.rmtree(self.model_dir)
             self.create_directory_structure()
 

@@ -18,10 +18,13 @@ nn = torch.nn
 
 class Model(BaseModel):
     def __init__(self, model_name, experiment_id, nb_state_features, nb_actions,
-                 hyperparams):
-        super(Model, self).__init__(model_name=model_name,
-                                    experiment_id=experiment_id,
-                                    hyperparams=hyperparams)
+                 hyperparams, overwrite_experiment):
+        super(Model, self).__init__(
+            model_name=model_name,
+            experiment_id=experiment_id,
+            hyperparams=hyperparams,
+            overwrite_experiment=overwrite_experiment)
+
         with open(os.path.join(WORK_DIR, 'model', model_name, experiment_id,
                                "params.json")) as handle:
             self.params = json.load(handle)
@@ -32,11 +35,11 @@ class Model(BaseModel):
 
         self.network = Network(
             nb_features=self.state_size, nb_actions=self.nb_actions,
-            params=self.params, seed=self.params['random_seed'])
+            params=self.params, seed=self.hyperparams['random_seed'])
         self.criterion = nn.MSELoss()
         self.optimizer = torch.optim.Adam(
             params=self.network.parameters(),
-            lr=self.params['init_learning_rate'])
+            lr=self.hyperparams['init_learning_rate'])
 
     def next_action(self, state, epsilon):
         state_tensor = torch.from_numpy(state).float()

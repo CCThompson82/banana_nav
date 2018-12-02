@@ -8,14 +8,14 @@ import numpy as np
 
 class ModelClient(object):
     def __init__(self, nb_actions, nb_state_features, model_name,
-                 experiment_id, overwrite_model, hyperparams):
+                 experiment_id, overwrite_experiment, hyperparams):
         self.hyperparams = hyperparams
         self.nb_actions = nb_actions
         self.state_shape = nb_state_features
 
         self.model = self.load_model(model_name=model_name,
                                      experiment_id=experiment_id,
-                                     overwrite_model=overwrite_model,
+                                     overwrite_experiment=overwrite_experiment,
                                      nb_actions=nb_actions,
                                      nb_state_features=nb_state_features,
                                      hyperparams=hyperparams)
@@ -23,11 +23,12 @@ class ModelClient(object):
         self.episode_count = 0
         self.episode_score = 0
 
-    def load_model(self, model_name, experiment_id, nb_actions,
-                   nb_state_features, hyperparams):
+    def load_model(self, model_name, experiment_id, overwrite_experiment,
+                   nb_actions, nb_state_features, hyperparams):
         Model = locate('model.{}.model.Model'.format(model_name))
         model = Model(model_name=model_name,
                       experiment_id=experiment_id,
+                      overwrite_experiment=overwrite_experiment,
                       nb_state_features=nb_state_features,
                       nb_actions=nb_actions,
                       hyperparams=hyperparams)

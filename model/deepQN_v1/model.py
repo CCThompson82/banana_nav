@@ -9,10 +9,14 @@ import torch
 
 class Model(ParentModel):
     def __init__(self, model_name, experiment_id, nb_state_features, nb_actions,
-                 hyperparams):
+                 hyperparams, overwrite_experiment):
         super(Model, self).__init__(
-            model_name, experiment_id, nb_state_features, nb_actions,
-            hyperparams)
+            model_name=model_name,
+            experiment_id=experiment_id,
+            nb_state_features=nb_state_features,
+            nb_actions=nb_actions,
+            hyperparams=hyperparams,
+            overwrite_experiment=overwrite_experiment)
 
     def get_sarsa(self):
 
