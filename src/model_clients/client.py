@@ -8,8 +8,8 @@ import numpy as np
 
 class ModelClient(object):
     def __init__(self, nb_actions, nb_state_features, model_name,
-                 experiment_id, train_config):
-        self.train_config=train_config
+                 experiment_id, hyperparams):
+        self.hyperparams = hyperparams
         self.nb_actions = nb_actions
         self.state_shape = nb_state_features
 
@@ -17,19 +17,19 @@ class ModelClient(object):
                                      experiment_id=experiment_id,
                                      nb_actions=nb_actions,
                                      nb_state_features=nb_state_features,
-                                     train_config=train_config)
+                                     hyperparams=hyperparams)
         self.step_count = 0
         self.episode_count = 0
         self.episode_score = 0
 
     def load_model(self, model_name, experiment_id, nb_actions,
-                   nb_state_features, train_config):
+                   nb_state_features, hyperparams):
         Model = locate('model.{}.model.Model'.format(model_name))
         model = Model(model_name=model_name,
                       experiment_id=experiment_id,
                       nb_state_features=nb_state_features,
                       nb_actions=nb_actions,
-                      train_config=train_config)
+                      hyperparams=hyperparams)
         return model
 
     def get_next_action(self, state):

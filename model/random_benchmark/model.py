@@ -13,10 +13,10 @@ from src.base_model.base_model import BaseModel
 
 class Model(BaseModel):
     def __init__(self, model_name, experiment_id, nb_actions, nb_state_features,
-                 train_config):
+                 hyperparams):
         super(Model, self).__init__(model_name=model_name,
                                     experiment_id=experiment_id,
-                                    train_config=train_config)
+                                    hyperparams=hyperparams)
         with open(os.path.join(WORK_DIR, 'model', model_name, experiment_id,
                                "params.json")) as handle:
             self.params = json.load(handle)
@@ -46,9 +46,9 @@ class Model(BaseModel):
     def get_epsilon(self, step_count):
         return 1.0/step_count
 
-    def terminate_training_status(self, train_config, step_count,
+    def terminate_training_status(self, hyperparams, step_count,
                                   episode_count):
-        return episode_count >= train_config['max_episodes']
+        return episode_count >= hyperparams['max_episodes']
 
     def checkpoint_model(self, episode_count):
         checkpoint_fn = os.path.join(self.checkpoint_dir, '{}.json'.format(

@@ -18,10 +18,10 @@ nn = torch.nn
 
 class Model(BaseModel):
     def __init__(self, model_name, experiment_id, nb_state_features, nb_actions,
-                 train_config):
+                 hyperparams):
         super(Model, self).__init__(model_name=model_name,
                                     experiment_id=experiment_id,
-                                    train_config=train_config)
+                                    hyperparams=hyperparams)
         with open(os.path.join(WORK_DIR, 'model', model_name, experiment_id,
                                "params.json")) as handle:
             self.params = json.load(handle)
@@ -65,7 +65,7 @@ class Model(BaseModel):
         return self.experience_buffer.pop(0)
 
     def train_model(self, state, action, reward, next_state, next_action):
-        gamma = self.train_config['gamma']
+        gamma = self.hyperparams['gamma']
         q_expected = self.estimate_q(state, action).detach()
 
         self.optimizer.zero_grad()
@@ -91,7 +91,7 @@ class Model(BaseModel):
         return np.round(epsilon, 3)
 
     def terminate_training_status(self, episode_count, **kwargs):
-        return episode_count >= self.train_config['max_episodes']
+        return episode_count >= self.hyperparams['max_episodes']
 
     def checkpoint_model(self, episode_count):
         checkpoint_fn = os.path.join(self.checkpoint_dir, '{}.json'.format(
@@ -102,7 +102,7 @@ class Model(BaseModel):
 
     def check_training_status(self):
         status = (len(self.experience_buffer) >=
-                  self.train_config['min_buffer_size'])
+                  self.hyperparams['min_buffer_size'])
         return status
 
 

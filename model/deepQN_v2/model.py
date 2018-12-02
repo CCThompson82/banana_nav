@@ -10,10 +10,10 @@ from src.base_networks.base_network import Network
 
 class Model(ParentModel):
     def __init__(self, model_name, experiment_id, nb_state_features, nb_actions,
-                 train_config):
+                 hyperparams):
         super(Model, self).__init__(
             model_name, experiment_id, nb_state_features, nb_actions,
-            train_config)
+            hyperparams)
 
         self.fixed_network = Network(
             nb_features=self.state_size, nb_actions=self.nb_actions,
@@ -32,7 +32,7 @@ class Model(ParentModel):
         return states, actions, rewards, next_states
 
     def train_model(self, states, actions, rewards, next_states, next_actions):
-        gamma = self.train_config['gamma']
+        gamma = self.hyperparams['gamma']
 
         state_values = self.estimate_action_values(states=next_states,
                                                    fixed=True).detach()

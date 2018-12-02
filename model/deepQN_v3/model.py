@@ -8,10 +8,10 @@ from model.deepQN_v2.model import Model as ParentModel
 
 class Model(ParentModel):
     def __init__(self, model_name, experiment_id, nb_state_features, nb_actions,
-                 train_config):
+                 hyperparams):
         super(Model, self).__init__(
             model_name, experiment_id, nb_state_features, nb_actions,
-            train_config)
+            hyperparams)
 
     def get_sarsa(self):
 
