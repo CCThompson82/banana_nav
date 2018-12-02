@@ -29,7 +29,7 @@ if __name__ == '__main__':
     with open(os.path.join(WORK_DIR, 'config', 'model.json')) as handle:
         model_config = json.load(handle)
     with open(os.path.join(WORK_DIR, 'config', 'hyperparameters.json')) as handle:
-        hyper_params = json.load(handle)
+        hyperparams = json.load(handle)
 
     client = ModelClient(nb_actions=brain.vector_action_space_size,
                          nb_state_features=brain.vector_observation_space_size,
@@ -62,13 +62,13 @@ if __name__ == '__main__':
             client.store_reward(reward)
             state = next_state
 
-            # if buffer is acceptable, train model
             if not client.check_training_status():
                 continue
             client.train_model()
 
         client.record_episode_score()
 
-        if client.episode_count % hyperparams['checkpoint_frequency'] == 0:
+        if client.checkpoint_step(model_config['checkpoint_frequency']):
             client.checkpoint_model()
+
 

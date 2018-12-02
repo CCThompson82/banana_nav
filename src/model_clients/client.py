@@ -110,3 +110,6 @@ class ModelClient(object):
             return len(self.model.experience_buffer)
         except AttributeError:
             return 0.0
+
+    def checkpoint_step(self, frequency):
+        return self.episode_count % frequency == 0
