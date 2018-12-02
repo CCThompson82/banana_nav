@@ -21,7 +21,7 @@ class Model(ParentModel):
     def get_sarsa(self):
 
         experience_index = np.random.choice(
-            range(len(self.experience_buffer)), self.params['batch_size'],
+            range(len(self.experience_buffer)), self.hyperparams['batch_size'],
             replace=False)
 
         experiences = [self.experience_buffer.pop(index) for index in sorted(

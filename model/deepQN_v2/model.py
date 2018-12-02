@@ -25,7 +25,7 @@ class Model(ParentModel):
 
     def get_sarsa(self):
         experiences = [self.experience_buffer.pop(0) for _ in range(
-            0, self.params['batch_size'])]
+            0, self.hyperparams['batch_size'])]
 
         states, actions, rewards, next_states = zip(*experiences)
         states = np.array(states)
