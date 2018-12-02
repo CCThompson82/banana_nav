@@ -1,5 +1,5 @@
 {
-  "max_episodes": 2000,
+  "max_episodes": 1500,
   "gamma": 0.99,
   "batch_size": 64,
   "init_learning_rate": 1e-3,
