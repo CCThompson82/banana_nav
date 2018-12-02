@@ -98,11 +98,9 @@ class Model(BaseModel):
         return episode_count >= self.hyperparams['max_episodes']
 
     def checkpoint_model(self, episode_count):
-        checkpoint_fn = os.path.join(self.checkpoint_dir, '{}.json'.format(
-            episode_count))
-        weights = {}
-        with open(checkpoint_fn, 'w') as out:
-            json.dump(weights, out)
+        checkpoint_filename = os.path.join(
+            self.checkpoint_dir, 'ckpt_{}.pth'.format(episode_count))
+        torch.save(self.network.network.state_dict(), checkpoint_filename)
 
     def check_training_status(self):
         status = (len(self.experience_buffer) >=
