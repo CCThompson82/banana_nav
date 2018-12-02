@@ -37,7 +37,7 @@ class Model(ParentModel):
 
     def check_training_status(self):
         status = (len(self.experience_buffer) >=
-                  self.hyperparams['min_buffer_size'])
+                  self.params['min_buffer_size'])
         return status
 
     def train_model(self, states, actions, rewards, next_states, next_actions):

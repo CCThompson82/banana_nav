@@ -90,7 +90,8 @@ class Model(BaseModel):
         if step_count == 0:
             epsilon = 1.0
         else:
-            epsilon = (1.0/step_count)**(1/self.params['epsilon_root_factor'])
+            epsilon = (1.0/step_count)**(1.0/self.hyperparams[
+                'epsilon_root_factor'])
         return np.round(epsilon, 3)
 
     def terminate_training_status(self, episode_count, **kwargs):
@@ -105,7 +106,7 @@ class Model(BaseModel):
 
     def check_training_status(self):
         status = (len(self.experience_buffer) >=
-                  self.hyperparams['min_buffer_size'])
+                  self.params['min_buffer_size'])
         return status
 
 

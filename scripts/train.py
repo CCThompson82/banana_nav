@@ -38,7 +38,6 @@ if __name__ == '__main__':
                          experiment_id=model_config['experiment_id'],
                          overwrite_experiment=model_config[
                              'overwrite_experiment'])
-    raise ValueError
 
     # build buffer with by running episodes
     pbar = tqdm(total=hyperparams['max_episodes'])

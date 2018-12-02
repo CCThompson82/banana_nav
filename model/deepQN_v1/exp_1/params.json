@@ -3,5 +3,5 @@
     "fc1": 64,
     "fc2": 32
   },
-  "buffer_size": 5000
+  "min_buffer_size": 5000
 }
