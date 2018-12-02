@@ -28,16 +28,19 @@ if __name__ == '__main__':
 
     with open(os.path.join(WORK_DIR, 'config', 'model.json')) as handle:
         model_config = json.load(handle)
-    with open(os.path.join(WORK_DIR, 'config', 'train.json')) as handle:
-        train_config = json.load(handle)
+    with open(os.path.join(WORK_DIR, 'config', 'hyperparameters.json')) as handle:
+        hyperparams = json.load(handle)
 
     client = ModelClient(nb_actions=brain.vector_action_space_size,
                          nb_state_features=brain.vector_observation_space_size,
-                         train_config=train_config,
-                         **model_config)
+                         hyperparams=hyperparams,
+                         model_name=model_config['model_name'],
+                         experiment_id=model_config['experiment_id'],
+                         overwrite_experiment=model_config[
+                             'overwrite_experiment'])
 
     # build buffer with by running episodes
-    pbar = tqdm(total=train_config['max_episodes'])
+    pbar = tqdm(total=hyperparams['max_episodes'])
     while not client.training_finished():
         pbar.set_postfix(
             ordered_dict=OrderedDict(
@@ -62,13 +65,13 @@ if __name__ == '__main__':
             client.store_reward(reward)
             state = next_state
 
-            # if buffer is acceptable, train model
             if not client.check_training_status():
                 continue
             client.train_model()
 
         client.record_episode_score()
 
-        if client.episode_count % train_config['checkpoint_frequency'] == 0:
+        if client.checkpoint_step(model_config['checkpoint_frequency']):
             client.checkpoint_model()
+
 

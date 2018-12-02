@@ -3,9 +3,6 @@
     "fc1": 64,
     "fc2": 32
   },
-  "init_learning_rate": 1e-3,
-  "epsilon_root_factor": 4,
-  "random_seed": 1234,
-  "batch_size": 64,
+  "min_buffer_size": 64,
   "tau": 1e-1
 }

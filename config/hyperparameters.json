@@ -1,0 +1,8 @@
+{
+  "max_episodes": 2000,
+  "gamma": 0.99,
+  "batch_size": 64,
+  "init_learning_rate": 1e-3,
+  "epsilon_root_factor": 3,
+  "random_seed": 1234
+}

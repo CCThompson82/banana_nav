@@ -10,7 +10,8 @@ sys.path.append(ROOT_DIR)
 
 
 class BaseModel(object):
-    def __init__(self, model_name, experiment_id, train_config):
+    def __init__(self, model_name, experiment_id, overwrite_experiment,
+                 hyperparams):
         self.model_name = model_name
         self.experiment_id = experiment_id
 
@@ -26,19 +27,19 @@ class BaseModel(object):
         if not os.path.isdir(self.model_dir):
             self.create_directory_structure()
 
-        elif train_config['overwrite_experiment_id']:
+        elif overwrite_experiment:
             shutil.rmtree(self.model_dir)
             self.create_directory_structure()
 
         else:
             raise IOError(
                 'An experiment for {}: {} already exists.  Set overwrite to '
-                'True in  `config/train.json` if you wish to overwrite the '
+                'True in  `config/hyperparameters.json` if you wish to overwrite the '
                 'previous experiment.'.format(self.model_name,
                                               self.experiment_id))
 
-        self.dump_experiment_info(train_config)
-        self.train_config = train_config
+        self.dump_experiment_info(hyperparams)
+        self.hyperparams = hyperparams
 
     def create_directory_structure(self):
         os.makedirs(self.model_dir)
@@ -46,10 +47,10 @@ class BaseModel(object):
         os.mkdir(os.path.join(self.model_dir, 'checkpoints'))
         os.mkdir(os.path.join(self.model_dir, 'experiment_info'))
 
-    def dump_experiment_info(self, train_config):
-        train_config['model_name'] = self.model_name
-        train_config['experiment_id'] = self.experiment_id
+    def dump_experiment_info(self, hyperparams):
+        hyperparams['model_name'] = self.model_name
+        hyperparams['experiment_id'] = self.experiment_id
 
         filename = os.path.join(self.experiment_info_dir, 'params.json')
         with open(filename, 'w') as out:
-            json.dump(train_config, out)
+            json.dump(hyperparams, out)

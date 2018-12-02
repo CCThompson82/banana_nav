@@ -18,10 +18,13 @@ nn = torch.nn
 
 class Model(BaseModel):
     def __init__(self, model_name, experiment_id, nb_state_features, nb_actions,
-                 train_config):
-        super(Model, self).__init__(model_name=model_name,
-                                    experiment_id=experiment_id,
-                                    train_config=train_config)
+                 hyperparams, overwrite_experiment):
+        super(Model, self).__init__(
+            model_name=model_name,
+            experiment_id=experiment_id,
+            hyperparams=hyperparams,
+            overwrite_experiment=overwrite_experiment)
+
         with open(os.path.join(WORK_DIR, 'model', model_name, experiment_id,
                                "params.json")) as handle:
             self.params = json.load(handle)
@@ -32,11 +35,11 @@ class Model(BaseModel):
 
         self.network = Network(
             nb_features=self.state_size, nb_actions=self.nb_actions,
-            params=self.params, seed=self.params['random_seed'])
+            params=self.params, seed=self.hyperparams['random_seed'])
         self.criterion = nn.MSELoss()
         self.optimizer = torch.optim.Adam(
             params=self.network.parameters(),
-            lr=self.params['init_learning_rate'])
+            lr=self.hyperparams['init_learning_rate'])
 
     def next_action(self, state, epsilon):
         state_tensor = torch.from_numpy(state).float()
@@ -65,7 +68,7 @@ class Model(BaseModel):
         return self.experience_buffer.pop(0)
 
     def train_model(self, state, action, reward, next_state, next_action):
-        gamma = self.train_config['gamma']
+        gamma = self.hyperparams['gamma']
         q_expected = self.estimate_q(state, action).detach()
 
         self.optimizer.zero_grad()
@@ -87,11 +90,12 @@ class Model(BaseModel):
         if step_count == 0:
             epsilon = 1.0
         else:
-            epsilon = (1.0/step_count)**(1/self.params['epsilon_root_factor'])
+            epsilon = (1.0/step_count)**(1.0/self.hyperparams[
+                'epsilon_root_factor'])
         return np.round(epsilon, 3)
 
     def terminate_training_status(self, episode_count, **kwargs):
-        return episode_count >= self.train_config['max_episodes']
+        return episode_count >= self.hyperparams['max_episodes']
 
     def checkpoint_model(self, episode_count):
         checkpoint_fn = os.path.join(self.checkpoint_dir, '{}.json'.format(
@@ -102,7 +106,7 @@ class Model(BaseModel):
 
     def check_training_status(self):
         status = (len(self.experience_buffer) >=
-                  self.train_config['min_buffer_size'])
+                  self.params['min_buffer_size'])
         return status
 
 
