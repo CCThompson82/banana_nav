@@ -8,13 +8,14 @@ import numpy as np
 
 class ModelClient(object):
     def __init__(self, nb_actions, nb_state_features, model_name,
-                 experiment_id, hyperparams):
+                 experiment_id, overwrite_model, hyperparams):
         self.hyperparams = hyperparams
         self.nb_actions = nb_actions
         self.state_shape = nb_state_features
 
         self.model = self.load_model(model_name=model_name,
                                      experiment_id=experiment_id,
+                                     overwrite_model=overwrite_model,
                                      nb_actions=nb_actions,
                                      nb_state_features=nb_state_features,
                                      hyperparams=hyperparams)

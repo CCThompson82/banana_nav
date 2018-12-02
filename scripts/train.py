@@ -35,6 +35,7 @@ if __name__ == '__main__':
                          nb_state_features=brain.vector_observation_space_size,
                          hyperparams=hyperparams,
                          **model_config)
+    raise ValueError
 
     # build buffer with by running episodes
     pbar = tqdm(total=hyperparams['max_episodes'])
