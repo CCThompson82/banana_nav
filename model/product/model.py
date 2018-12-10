@@ -3,17 +3,15 @@ Product model solution for the banana navigation problem
 """
 import os
 import sys
-
-
-WORK_DIR = os.environ['ROOT_DIR']
-sys.path.append(WORK_DIR)
-
 import json
 import numpy as np
 from src.base_model.base_model import BaseModel
 from src.base_networks.base_network import Network
 import torch
 nn = torch.nn
+
+WORK_DIR = os.environ['ROOT_DIR']
+sys.path.append(WORK_DIR)
 
 
 class Model(BaseModel):
@@ -36,6 +34,10 @@ class Model(BaseModel):
         self.network = Network(
             nb_features=self.state_size, nb_actions=self.nb_actions,
             params=self.params, seed=self.hyperparams['random_seed'])
+        self.fixed_network = Network(
+            nb_features=self.state_size, nb_actions=self.nb_actions,
+            params=self.params, seed=self.hyperparams['random_seed'])
+
         self.criterion = nn.MSELoss()
         self.optimizer = torch.optim.Adam(
             params=self.network.parameters(),
@@ -63,6 +65,23 @@ class Model(BaseModel):
 
     def store_experience(self, experience):
         self.experience_buffer.append(experience)
+
+    def get_sarsa(self):
+
+        experience_index = np.random.choice(
+            range(len(self.experience_buffer)), self.hyperparams['batch_size'],
+            replace=False)
+
+        experiences = [self.experience_buffer.pop(index) for index in sorted(
+            experience_index, reverse=True)]
+
+        states, actions, rewards, next_states = zip(*experiences)
+        states = np.array(states)
+        actions = np.array(actions)
+        rewards = np.array(rewards)
+        next_states = np.array(next_states)
+
+        return states, actions, rewards, next_states
 
     def train_model(self, states, actions, rewards, next_states, next_actions):
         gamma = self.hyperparams['gamma']
@@ -105,11 +124,11 @@ class Model(BaseModel):
         pass
 
     def get_epsilon(self, step_count):
+        epf = self.hyperparams['epsilon_root_factor']
         if step_count == 0:
             epsilon = 1.0
         else:
-            epsilon = (1.0/step_count)**(1.0/self.hyperparams[
-                'epsilon_root_factor'])
+            epsilon = (1.0/step_count)**(1.0/epf)
         return np.round(epsilon, 3)
 
     def terminate_training_status(self, episode_count, **kwargs):
@@ -124,5 +143,3 @@ class Model(BaseModel):
         status = (len(self.experience_buffer) >=
                   self.params['min_buffer_size'])
         return status
-
-
