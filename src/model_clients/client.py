@@ -118,21 +118,29 @@ class ModelClient(object):
 
     def mean_eval_score(self, checkpoint, trial):
 
-        checkpoint = '{}.npy'.format(checkpoint.split('.')[0])
+        checkpoint_name = checkpoint.split('.')[0]
+        eval_fn = os.path.join(self.model.evaluation_dir, checkpoint_name,
+                               'trial_{}.npy'.format(trial))
         try:
-            arr = np.load(
-                os.path.join(self.model.evaluation_dir, trial, checkpoint))
-            return np.mean(arr)
+            arr = np.load(eval_fn)
+            return np.round(np.mean(arr), 4)
         except FileNotFoundError:
-            return 0.0
+            return np.round(0.0, 4)
 
     def record_eval_episode_score(self, trial, checkpoint):
-        checkpoint_fn = '{}.npy'.format(checkpoint.split('.')[0])
-        eval_fn = os.path.join(self.model.evaluation_dir, trial, checkpoint_fn)
+        checkpoint_name = checkpoint.split('.')[0]
+        eval_fn = os.path.join(self.model.evaluation_dir, checkpoint_name,
+                               'trial_{}.npy'.format(trial))
         try:
             arr = np.load(eval_fn)
             arr = np.concatenate([arr, np.array([self.episode_score])])
         except FileNotFoundError:
+            try:
+                # eval checkpoint dir does not exist
+                os.mkdir(os.path.dirname(eval_fn))
+            except FileExistsError:
+                # eval checkpoint dir exists, but not trial filename
+                pass
             arr = np.array([self.episode_score])
         np.save(eval_fn, arr)
         self.reset_episode()

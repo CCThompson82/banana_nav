@@ -50,35 +50,34 @@ if __name__ == '__main__':
     checkpoint_set = os.listdir(checkpoint_dir)
     checkpoint_set = ['ckpt_0.pth'] + checkpoint_set
 
-    pbar = tqdm(total=len(checkpoint_set))
+    pbar = tqdm(total=len(checkpoint_set)*100)
     for checkpoint in checkpoint_set:
 
         if checkpoint != 'ckpt_0.pth':
             client.restore_checkpoint(checkpoint)
 
-        for trial in range(3):
-            for episode in range(100):
-                pbar.set_postfix(
-                    ordered_dict=OrderedDict(
-                        [('checkpoint', checkpoint),
-                         ('eval_replicate', trial),
-                         ('trial episode', episode),
-                         ('mean episode score', client.mean_eval_score(
-                             checkpoint, trial))]))
-                pbar.update()
+        trial = '20181210'
+        for episode in range(100):
+            pbar.set_postfix(
+                ordered_dict=OrderedDict(
+                    [('checkpoint', checkpoint.split('.')[0]),
+                     ('trial episode', episode),
+                     ('mean episode score', client.mean_eval_score(
+                         checkpoint, str(trial)))]))
+            pbar.update()
 
-                env_info = env.reset(train_mode=True)[brain.brain_name]
-                state = env_info.vector_observations[0]
+            env_info = env.reset(train_mode=True)[brain.brain_name]
+            state = env_info.vector_observations[0]
 
-                while not (env_info.local_done[0] or env_info.max_reached[0]):
-                    action = client.get_next_action(state=state)
-                    env_info = env.step(action)[brain.brain_name]
-                    reward = env_info.rewards[0]
-                    next_state = env_info.vector_observations[0]
+            while not (env_info.local_done[0] or env_info.max_reached[0]):
+                action = client.get_next_action(state=state)
+                env_info = env.step(action)[brain.brain_name]
+                reward = env_info.rewards[0]
+                next_state = env_info.vector_observations[0]
 
-                    client.store_reward(reward)
-                    state = next_state
-                client.record_eval_episode_score(trial, checkpoint)
+                client.store_reward(reward)
+                state = next_state
+            client.record_eval_episode_score(str(trial), checkpoint)
 
 
 
