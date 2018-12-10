@@ -1,6 +1,6 @@
 {
-  "model_name": "deepQN_v1",
-  "experiment_id": "exp_no_replay",
+  "model_name": "product",
+  "experiment_id": "best_exp",
   "overwrite_experiment": true,
   "checkpoint_frequency": 100
 }
