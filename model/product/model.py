@@ -120,9 +120,6 @@ class Model(BaseModel):
             updated_param = tau*src_param.data + (1.0-tau)*dst_param.data
             dst_param.data.copy_(updated_param)
 
-    def update_model_weights(self, loss):
-        pass
-
     def get_epsilon(self, step_count):
         epf = self.hyperparams['epsilon_root_factor']
         if step_count == 0:
