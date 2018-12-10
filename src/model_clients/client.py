@@ -137,5 +137,8 @@ class ModelClient(object):
         np.save(eval_fn, arr)
         self.reset_episode()
 
+    def restore_checkpoint(self, checkpoint):
+        self.model.restore_checkpoint(checkpoint=checkpoint)
+
 
 
