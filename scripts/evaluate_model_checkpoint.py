@@ -44,3 +44,8 @@ if __name__ == '__main__':
                          experiment_id=model_config['experiment_id'],
                          overwrite_experiment=model_config[
                              'overwrite_experiment'])
+
+    checkpoint_dir = os.path.join(
+        WORK_DIR, 'data', model_config['model_name'],
+        model_config['experiment_id'],
+    checkpoint_set =
