@@ -1,7 +1,7 @@
 """
 Model object that abstracts dynamic model versioning and directory management.
 """
-
+import os
 from pydoc import locate
 import numpy as np
 
@@ -115,3 +115,27 @@ class ModelClient(object):
 
     def checkpoint_step(self, frequency):
         return self.episode_count % frequency == 0
+
+    def mean_eval_score(self, checkpoint, trial):
+
+        checkpoint = '{}.npy'.format(checkpoint.split('.')[0])
+        try:
+            arr = np.load(
+                os.path.join(self.model.evaluation_dir, trial, checkpoint))
+            return np.mean(arr)
+        except FileNotFoundError:
+            return 0.0
+
+    def record_eval_episode_score(self, trial, checkpoint):
+        checkpoint_fn = '{}.npy'.format(checkpoint.split('.')[0])
+        eval_fn = os.path.join(self.model.evaluation_dir, trial, checkpoint_fn)
+        try:
+            arr = np.load(eval_fn)
+            arr = np.concatenate([arr, np.array([self.episode_score])])
+        except FileNotFoundError:
+            arr = np.array([self.episode_score])
+        np.save(eval_fn, arr)
+        self.reset_episode()
+
+
+

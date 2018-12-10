@@ -20,6 +20,7 @@ class BaseModel(object):
         self.results_dir = os.path.join(self.model_dir, 'results')
         self.results_filename = os.path.join(self.results_dir,
                                              'episode_scores.npy')
+        self.evaluation_dir = os.path.join(self.model_dir, 'evaluation')
         self.checkpoint_dir = os.path.join(self.model_dir, 'checkpoints')
         self.experiment_info_dir = os.path.join(
             self.model_dir, 'experiment_info')
@@ -27,7 +28,7 @@ class BaseModel(object):
         if not os.path.isdir(self.model_dir):
             self.create_directory_structure()
         elif overwrite_experiment == 'EVAL_MODE':
-            pass
+            os.mkdir(self.evaluation_dir)
         elif overwrite_experiment:
             shutil.rmtree(self.model_dir)
             self.create_directory_structure()

@@ -42,10 +42,51 @@ if __name__ == '__main__':
                          hyperparams=stored_hyperparams,
                          model_name=model_config['model_name'],
                          experiment_id=model_config['experiment_id'],
-                         overwrite_experiment=model_config[
-                             'overwrite_experiment'])
+                         overwrite_experiment='EVAL_MODE')
 
     checkpoint_dir = os.path.join(
         WORK_DIR, 'data', model_config['model_name'],
-        model_config['experiment_id'],
-    checkpoint_set =
+        model_config['experiment_id'], 'checkpoints')
+    checkpoint_set = os.listdir(checkpoint_dir)
+    checkpoint_set = ['ckpt_0.pth'] + checkpoint_set
+
+    pbar = tqdm(total=len(checkpoint_set))
+    for checkpoint in checkpoint_set:
+
+        if checkpoint != 'ckpt_0.pth':
+            client.restore_checkpoint(checkpoint)
+
+        for trial in range(3):
+            for episode in range(100):
+                pbar.set_postfix(
+                    ordered_dict=OrderedDict(
+                        [('checkpoint', checkpoint),
+                         ('eval_replicate', trial),
+                         ('trial episode', episode),
+                         ('mean episode score', client.mean_eval_score(
+                             checkpoint, trial))]))
+                pbar.update()
+
+                env_info = env.reset(train_mode=True)[brain.brain_name]
+                state = env_info.vector_observations[0]
+
+                while not (env_info.local_done[0] or env_info.max_reached[0]):
+                    action = client.get_next_action(state=state)
+                    env_info = env.step(action)[brain.brain_name]
+                    reward = env_info.rewards[0]
+                    next_state = env_info.vector_observations[0]
+
+                    client.store_reward(reward)
+                    state = next_state
+                client.record_eval_episode_score(trial, checkpoint)
+
+
+
+
+
+
+
+
+
+
+
