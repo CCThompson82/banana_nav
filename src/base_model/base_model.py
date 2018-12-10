@@ -26,17 +26,17 @@ class BaseModel(object):
 
         if not os.path.isdir(self.model_dir):
             self.create_directory_structure()
-
+        elif overwrite_experiment == 'EVAL_MODE':
+            pass
         elif overwrite_experiment:
             shutil.rmtree(self.model_dir)
             self.create_directory_structure()
-
         else:
             raise IOError(
                 'An experiment for {}: {} already exists.  Set overwrite to '
-                'True in  `config/hyperparameters.json` if you wish to overwrite the '
-                'previous experiment.'.format(self.model_name,
-                                              self.experiment_id))
+                'True in  `config/hyperparameters.json` if you wish to '
+                'overwrite the previous experiment.'.format(
+                    self.model_name, self.experiment_id))
 
         self.dump_experiment_info(hyperparams)
         self.hyperparams = hyperparams

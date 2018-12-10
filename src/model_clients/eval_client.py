@@ -28,7 +28,7 @@ class ModelClient(object):
         Model = locate('model.{}.model.Model'.format(model_name))
         model = Model(model_name=model_name,
                       experiment_id=experiment_id,
-                      overwrite_experiment=overwrite_experiment,
+                      overwrite_experiment="EVAL_MODE",
                       nb_state_features=nb_state_features,
                       nb_actions=nb_actions,
                       hyperparams=hyperparams)
