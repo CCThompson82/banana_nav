@@ -2,10 +2,7 @@
 # -*- coding: utf-8 -*-
 """
 Generic script that dynamically loads the named model from `config/model.json`,
-and proceeds to train the banana navigation agent.  Data regarding training
-performance and model checkpoints will be output regularly to
-`data/<model name>/<experiment id>/` based on the parameters set in
-`config/hyperparameters.json`.
+and proceeds to evaluate chekpoints made during the training of the model.
 """
 import os
 import sys
@@ -27,12 +24,12 @@ if __name__ == '__main__':
     env = UnityEnvironment(file_name=UNITY_ENV_PATH)
     brain = env.brains[env.brain_names[0]]
 
-    with open(os.path.join(WORK_DIR, 'config', 'model.json')) as handle:
-        model_config = json.load(handle)
+    with open(os.path.join(WORK_DIR, 'config', 'eval.json')) as handle:
+        eval_config = json.load(handle)
 
     hyperparam_path = os.path.join(
-        WORK_DIR, 'data', model_config['model_name'],
-        model_config['experiment_id'], 'experiment_info', 'params.json')
+        WORK_DIR, 'data', eval_config['model_name'],
+        eval_config['experiment_id'], 'experiment_info', 'params.json')
 
     with open(hyperparam_path, 'r') as handle:
         stored_hyperparams = json.load(handle)
@@ -40,24 +37,24 @@ if __name__ == '__main__':
     client = ModelClient(nb_actions=brain.vector_action_space_size,
                          nb_state_features=brain.vector_observation_space_size,
                          hyperparams=stored_hyperparams,
-                         model_name=model_config['model_name'],
-                         experiment_id=model_config['experiment_id'],
+                         model_name=eval_config['model_name'],
+                         experiment_id=eval_config['experiment_id'],
                          overwrite_experiment='EVAL_MODE')
 
     checkpoint_dir = os.path.join(
-        WORK_DIR, 'data', model_config['model_name'],
-        model_config['experiment_id'], 'checkpoints')
+        WORK_DIR, 'data', eval_config['model_name'],
+        eval_config['experiment_id'], 'checkpoints')
     checkpoint_set = os.listdir(checkpoint_dir)
     checkpoint_set = ['ckpt_0.pth'] + checkpoint_set
 
-    pbar = tqdm(total=len(checkpoint_set)*100)
+    pbar = tqdm(total=len(checkpoint_set)*int(eval_config['nb_evaluations']))
     for checkpoint in checkpoint_set:
 
         if checkpoint != 'ckpt_0.pth':
             client.restore_checkpoint(checkpoint)
 
-        trial = '20181210'
-        for episode in range(100):
+        trial = eval_config['evaluation_id']
+        for episode in range(eval_config['nb_evaluations']):
             pbar.set_postfix(
                 ordered_dict=OrderedDict(
                     [('checkpoint', checkpoint.split('.')[0]),

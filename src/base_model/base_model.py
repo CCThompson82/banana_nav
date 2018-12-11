@@ -31,8 +31,7 @@ class BaseModel(object):
             try:
                 os.mkdir(self.evaluation_dir)
             except FileExistsError:
-                shutil.rmtree(self.evaluation_dir)
-                os.mkdir(self.evaluation_dir)
+                pass
         elif overwrite_experiment:
             shutil.rmtree(self.model_dir)
             self.create_directory_structure()
