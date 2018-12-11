@@ -136,6 +136,11 @@ class Model(BaseModel):
             self.checkpoint_dir, 'ckpt_{}.pth'.format(episode_count))
         torch.save(self.network.network.state_dict(), checkpoint_filename)
 
+    def restore_checkpoint(self, checkpoint):
+        checkpoint_fn = os.path.join(self.checkpoint_dir, checkpoint)
+        state_dict = torch.load(checkpoint_fn)
+        self.network.network.load_state_dict(state_dict)
+
     def check_training_status(self):
         status = (len(self.experience_buffer) >=
                   self.params['min_buffer_size'])

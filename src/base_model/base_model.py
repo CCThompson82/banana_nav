@@ -20,23 +20,27 @@ class BaseModel(object):
         self.results_dir = os.path.join(self.model_dir, 'results')
         self.results_filename = os.path.join(self.results_dir,
                                              'episode_scores.npy')
+        self.evaluation_dir = os.path.join(self.model_dir, 'evaluation')
         self.checkpoint_dir = os.path.join(self.model_dir, 'checkpoints')
         self.experiment_info_dir = os.path.join(
             self.model_dir, 'experiment_info')
 
         if not os.path.isdir(self.model_dir):
             self.create_directory_structure()
-
+        elif overwrite_experiment == 'EVAL_MODE':
+            try:
+                os.mkdir(self.evaluation_dir)
+            except FileExistsError:
+                pass
         elif overwrite_experiment:
             shutil.rmtree(self.model_dir)
             self.create_directory_structure()
-
         else:
             raise IOError(
                 'An experiment for {}: {} already exists.  Set overwrite to '
-                'True in  `config/hyperparameters.json` if you wish to overwrite the '
-                'previous experiment.'.format(self.model_name,
-                                              self.experiment_id))
+                'True in  `config/hyperparameters.json` if you wish to '
+                'overwrite the previous experiment.'.format(
+                    self.model_name, self.experiment_id))
 
         self.dump_experiment_info(hyperparams)
         self.hyperparams = hyperparams
