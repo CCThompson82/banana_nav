@@ -34,7 +34,7 @@ export PYTHONPATH=$PYTHONPATH:$(PWD)
 export PROJECT_NAME=banana_nav
 export IMAGE_NAME=$(PROJECT_NAME)-image
 export CONTAINER_NAME=$(PROJECT_NAME)-container
-export DATA_SOURCE=/mnt/DATA/banana_nav
+export DATA_SOURCE=/mnt/DATA/banana_nav # NOTE: Modify this to your desired data path.   Default:  DATA_SOURCE=$(PWD)/data
 export JUPYTER_HOST_PORT=8889
 export JUPYTER_CONTAINER_PORT=8888
 export PYTHON=python3
