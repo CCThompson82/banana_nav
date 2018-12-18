@@ -98,8 +98,16 @@ The final hyperparameters used to train the product model are available in
 
 ### Training performance
 
+![Training](support_images/TrainingScores.png)
+
+Figure 1 - Rolling 100-episode average score for the final product model during training.  Training
+protocol includes selection of random actions with probability epsilon. 
+
 ### Evaluation performance
 
+![Evaluation](support_images/EvalScores.png)
 
+Figure 2 - Evaluation of the checkpoint models made during training of the final product model 
+training regime.  
 
 ## Discussion
