@@ -105,7 +105,7 @@ protocol includes selection of random actions with probability epsilon.
 
 ### Evaluation performance
 
-![Evaluation](support_images/EvalScores.png)
+![Evaluation](support_images/EvalScore.png)
 
 Figure 2 - Evaluation of the checkpoint models made during training of the final product model 
 training regime.  
@@ -113,3 +113,6 @@ training regime.
 
 
 ## Discussion
+
+The first checkpoint that demonstrates the ability to score +13.0 over the course of 100 episodes 
+was made after 600 episodes.  It does appear that the network  
