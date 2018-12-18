@@ -58,7 +58,6 @@ respectively.  This base architecture is set up using the class object defined i
 `src/base_networks/base_network.py`.  The size of the hidden layers is provided from the model 
 parameters, which is specific to an experiment_id, e.g. `models/product/best_exp/params.json`.
 
-
 ###### Experience Replay
 In some tasks, training a DQN model with experiences immediately as they are collected can create 
 an unstable training process, whereby early actions get locked in, creating very little exploration
@@ -85,10 +84,21 @@ and the expected return for a given state-action.  After each training step, the
 moved slightly in the direction of the estimation network by a factor of parameter tau.  
 
 This process stabilizes training and avoids allowing early inaccurate action value experiences from 
-causing a run-away gradient.  
+causing a run-away gradient error.   
 
+###### Final Parameters and Training
+The final parameters used for the product/best_exp model are found in 
+`models/product/best_exp/params.json`, and were determined empirically through experimentation 
+during the development process.  
+
+The final hyperparameters used to train the product model are available in 
+`data/product/best_exp/experiment_id`.
 
 ## Results 
+
+### Training performance
+
+### Evaluation performance
 
 
 
