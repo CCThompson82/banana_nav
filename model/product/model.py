@@ -39,7 +39,7 @@ class Model(BaseModel):
             params=self.params, seed=self.hyperparams['random_seed'])
 
         self.soft_update(src_model=self.network, dst_model=self.fixed_network,
-                         tau=1.0)
+                         tau=0.5)  # Not necessary, but speeds up training if learning rate is under strength
 
         self.criterion = nn.MSELoss()
         self.optimizer = torch.optim.Adam(
