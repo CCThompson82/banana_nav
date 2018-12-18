@@ -52,9 +52,9 @@ export DOCKERFILE=docker/Dockerfile
 help:
 	@$(PYTHON) -c "$$PRINT_HELP_PYSCRIPT" < $(MAKEFILE_LIST)
 
-init: init-docker sync-from-source ## initialize repository for traning
+init: init-docker sync-from-source ## initialize repository for training
 
-sync-from-source: ## download data data source to local envrionment
+sync-from-source: ## download data data source to local environment
 	cp -r $(DATA_SOURCE)/* ./data/
 
 init-docker: ## initialize docker image
