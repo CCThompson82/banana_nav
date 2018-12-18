@@ -3,6 +3,6 @@
     "fc1": 64,
     "fc2": 32
   },
-  "min_buffer_size": 500,
-  "tau": 5e-3
+  "min_buffer_size": 5000,
+  "tau": 5e-2
 }

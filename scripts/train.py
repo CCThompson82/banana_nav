@@ -15,10 +15,11 @@ from tqdm import tqdm
 from collections import OrderedDict
 from unityagents import UnityEnvironment
 
-from src.model_clients.client import ModelClient
-
 WORK_DIR = os.environ['ROOT_DIR']
 sys.path.append(WORK_DIR)
+
+from src.model_clients.client import ModelClient
+
 UNITY_ENV_PATH = os.environ['UNITY_ENV_PATH']
 
 if __name__ == '__main__':
