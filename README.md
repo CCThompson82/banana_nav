@@ -61,10 +61,12 @@ over the course of training.
 
 ### Evaluate the checkpoints of MY trained model
 I have stored the set of checkpoints from the final version of the trained product model inside 
-of the base docker image.  To validate those checkpoints without having retrained the model locally, 
+of the base docker image.  To view the checkpoints, one may start the container and navigate into 
+the root of the container, inside the /mnt/banana_navigation directory.  
+
+To validate those checkpoints without having retrained the model locally, 
 one may copy my version of the model with its checkpoints into the appropriate location, prior to 
 running the evaluation script.  
-
 
 1. start the container:
     * `make start-container` or `make create-container`.
@@ -74,6 +76,9 @@ running the evaluation script.
     * `python3 ./scripts/train.py`
 
 ### Evaluate the checkpoints of your locally trained model
+If you have trained the product version of the model locally on your system, you can evaluate
+the checkpoints of the model with the following script.  
+
 1. start the container:
     * `make start-container` or `make create-container`.
 2. update the "evaluation_id" parameter in `config/eval.json`
