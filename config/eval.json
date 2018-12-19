@@ -1,6 +1,6 @@
 {
   "model_name": "product",
-  "experiment_id": "best_exp_v1",
-  "evaluation_id": "20181218.001",
+  "experiment_id": "best_exp",
+  "evaluation_id": "20181219.001",
   "nb_evaluations": 100
 }

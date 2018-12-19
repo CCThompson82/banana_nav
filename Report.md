@@ -101,18 +101,41 @@ The final hyperparameters used to train the product model are available in
 ![Training](support_images/TrainingScores.png)
 
 Figure 1 - Rolling 100-episode average score for the final product model during training.  Training
-protocol includes selection of random actions with probability epsilon. 
+protocol includes selection of random actions with a decreasing probability, epsilon. 
 
 ### Evaluation performance
 
-![Evaluation](support_images/EvalScore.png)
+![Evaluation](support_images/EvalScores.png)
 
-Figure 2 - Evaluation of the checkpoint models made during training of the final product model 
-training regime.  
+Figure 2 - Evaluation of the model checkpoints made during training of the final product model 
+training regime over the course of 100 episodes, without random action selection.  
 
 
+
+## Conclusion
+
+An agent was successfully trained to achieve a score of +13.0 per episode of banana collection.  
+
+The first checkpoint that demonstrates the ability to score +13.0 over the course of 100 episodes 
+was made after 600 episodes had been logged.  Considering training did not begin until at least 5000 steps 
+had been recorded, and there are 300 steps per episode, 600 episodes of experience equates to 
+approximately 175200 training steps.   
+
+However the DQN seemed to regress occasionally, and a consistent score of +13.0 is observed after 
+approximately 900 episodes of experience, or 265200 training steps.
 
 ## Discussion
 
-The first checkpoint that demonstrates the ability to score +13.0 over the course of 100 episodes 
-was made after 600 episodes.  It does appear that the network  
+While the task was indeed solved by employing a DQN model that utilized experience replay, and 
+fixed target networks, it is likely that a more efficient model would solve this task with less 
+training examples.  
+
+From the training curves, it is clear that the learning rate is probably set too high.  This is 
+demonstrated by checkpoints that regress well below the local episode score average.  A tailored 
+dynamic learning rate is probably essential to increase the total average reward over time.  
+
+Beyond hyperparameter adjustment, variations on the experience replay feature as currently implemented 
+would probably provide the greatest 
+impact on the speed to task solution.  By sampling experiences that are different from one another,
+i.e. prioritizing rare experiences over common ones, training steps would be more efficient in 
+generating a general solution.  
