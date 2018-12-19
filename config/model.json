@@ -1,6 +1,6 @@
 {
   "model_name": "product",
   "experiment_id": "best_exp",
-  "overwrite_experiment": true,
+  "overwrite_experiment": false,
   "checkpoint_frequency": 50
 }
