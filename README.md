@@ -31,8 +31,8 @@ section below.  Instructions for setting up and running the docker environment a
 
 ### Setup the Environment
 
-1. In `Makefile` of the repository root directory, modify the environment variable definition on line
-37.  It can be advantageous to mount a storage directory though a default option is available.     
+1. In `Makefile` of the repository root directory, modify the environment variable definition on 
+line 37.  It can be advantageous to mount a storage directory though a default option is available.     
 2. Setup the development environment in a Docker container with the following command:
     - `make init`
     
