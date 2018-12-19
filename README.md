@@ -59,7 +59,21 @@ over the course of training.
 
 ## Evaluate the product model
 
-### Evaluate the checkpoints of a trained model
+### Evaluate the checkpoints of MY trained model
+I have stored the set of checkpoints from the final version of the trained product model inside 
+of the base docker image.  To validate those checkpoints without having retrained the model locally, 
+one may copy my version of the model with its checkpoints into the appropriate location, prior to 
+running the evaluation script.  
+
+
+1. start the container:
+    * `make start-container` or `make create-container`.
+2. run the command: `make mount-prodmod`
+3. update the "evaluation_id" parameter in `config/eval.json`
+4. run the following command from the docker container workdir:
+    * `python3 ./scripts/train.py`
+
+### Evaluate the checkpoints of your locally trained model
 1. start the container:
     * `make start-container` or `make create-container`.
 2. update the "evaluation_id" parameter in `config/eval.json`
