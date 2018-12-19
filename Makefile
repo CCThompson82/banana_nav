@@ -34,7 +34,7 @@ export PYTHONPATH=$PYTHONPATH:$(PWD)
 export PROJECT_NAME=banana_nav
 export IMAGE_NAME=$(PROJECT_NAME)-image
 export CONTAINER_NAME=$(PROJECT_NAME)-container
-export DATA_SOURCE=/mnt/DATA/banana_nav # NOTE: Modify this to your desired data path.   Default:  DATA_SOURCE=$(PWD)/data
+export DATA_SOURCE=/mnt/DATA/banana_nav
 export JUPYTER_HOST_PORT=8889
 export JUPYTER_CONTAINER_PORT=8888
 export PYTHON=python3
@@ -64,7 +64,8 @@ sync-to-source: ## sync local data to data source
 	cp -r ./data/* $(DATA_SOURCE)/
 
 create-container: ## create docker container
-	$(DOCKER) run -it -v $(PWD):/workdir \
+	$(DOCKER) run -it  \
+	-v $(PWD):/workdir \
 	-v $(DATA_SOURCE):/workdir/data \
 	-p $(JUPYTER_HOST_PORT):$(JUPYTER_CONTAINER_PORT) \
 	--name $(CONTAINER_NAME) $(IMAGE_NAME)
@@ -112,3 +113,6 @@ clean-container: ## remove Docker container
 
 clean-image: ## remove Docker image
 	-$(DOCKER) image rm $(IMAGE_NAME)
+
+mount-prodmod: ## sync local data to data source
+	cp -r /mnt/banana_navigation/product/* /workdir/data/product/

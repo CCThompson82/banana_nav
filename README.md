@@ -23,14 +23,16 @@ section below.  Instructions for setting up and running the docker environment a
 `Setup Environment` section.    
 
 ### Requirements 
-* [docker](https://docs.docker.com/install/)  
-    - find and follow the instructions for your operating system
-* [cmake](https://cmake.org/install/)
 
-### Setup Environment
+* Python 2.7 or Python 3.5
+* Docker version 17 or later
+    * [docker](https://docs.docker.com/install/)  
+        - find and follow the instructions for your operating system
 
-1. Modify the cmake CONFIG defaults to match your preferences.  Particularly, the directory in 
-which data should be stored should be updated to match your system preferences.   
+### Setup the Environment
+
+1. In `Makefile` of the repository root directory, modify the environment variable definition on line
+37.  It can be advantageous to mount a storage directory though a default option is available.     
 2. Setup the development environment in a Docker container with the following command:
     - `make init`
     
@@ -40,22 +42,55 @@ which data should be stored should be updated to match your system preferences.
 - `make create-container`
 
     The above command creates a Docker container from the Docker image which we create with `make init`, and then
-login to the Docker container.  Only the first time you need to create a Docker container, from the image created in `make init` command.
-`make create-container` creates and launch the banana_nav container.
-After creating the container, you just need run `make start-container`.
+login to the Docker container.  This command needs to be run only once after creating the docker image.  After the
+container hs been created with the command above, use the following command to enter the existing container: `make start-container`.
 
 ## Train the product model agent from scratch 
 1. start the container:
     * `make start-container` or `make create-container`
-2. update the `experiment_id` parameter in `config/model.json` to a unique namespace.
+2. Set the `config/model.json` "overwrite_experiment" parameter to "true".
 3. run the following command from the docker container: 
     * `python3 ./scripts/train.py`
 
-Voila! A tdqm progress bar should provide the necessary information to understand agent performance 
-over the course of training.  A separate evaluation script can be run after updating the 
-relevant fields in the `config/eval.json` file, and then running 
-`./scripts/evaluate_model_checkpoint.py`.      
+Voila! The script will load the in necessary pieces to run a training of the product model from 
+scratch.  A tdqm progress bar should provide the necessary information to understand agent performance 
+over the course of training.  
 
+
+## Evaluate the product model
+
+### Evaluate the checkpoints of MY trained model
+I have stored the set of checkpoints from the final version of the trained product model inside 
+of the base docker image.  To view the checkpoints, one may start the container and navigate into 
+the root of the container, inside the /mnt/banana_navigation directory.  
+
+To validate those checkpoints without having retrained the model locally, 
+one may copy my version of the model with its checkpoints into the appropriate location, prior to 
+running the evaluation script.  
+
+1. start the container:
+    * `make start-container` or `make create-container`.
+2. run the command: `make mount-prodmod`
+3. update the "evaluation_id" parameter in `config/eval.json`
+4. run the following command from the docker container workdir:
+    * `python3 ./scripts/train.py`
+
+### Evaluate the checkpoints of your locally trained model
+If you have trained the product version of the model locally on your system, you can evaluate
+the checkpoints of the model with the following script.  
+
+1. start the container:
+    * `make start-container` or `make create-container`.
+2. update the "evaluation_id" parameter in `config/eval.json`
+3. run the following command from the docker container workdir:
+    * `python3 ./scripts/train.py`
+    
+The script will load all of the checkpoints created during the specified model's
+training, and will record the agent's score over the specified number of episodes.
+These results are stored in the model's data folder, within the evaluation directory.  
+
+For graphical analysis of your evaluation script, you can update the EVAL_ID parameter inside of the
+`notebooks/PRODUCT_MODEL_EVALUATION.ipynb` notebook and run the full script to produce graph. 
 
 ## Credits
 
