@@ -89,6 +89,9 @@ The script will load all of the checkpoints created during the specified model's
 training, and will record the agent's score over the specified number of episodes.
 These results are stored in the model's data folder, within the evaluation directory.  
 
+For graphical analysis of your evaluation script, you can update the EVAL_ID parameter inside of the
+`notebooks/PRODUCT_MODEL_EVALUATION.ipynb` notebook and run the full script to produce graph. 
+
 ## Credits
 
 This repository was created with [Cookiecutter](https://github.com/audreyr/cookiecutter) and the [cookiecutter-docker-science](https://docker-science.github.io/) project template.
